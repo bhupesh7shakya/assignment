@@ -37,7 +37,7 @@ class MusicController extends SharedController
 
                     ['options'=>
                       Genre::all()->pluck('name','id')
-                    , 'name' => 'genre', 'label' => 'genre_id', 'value' => (isset($data->genre_id)) ? $data->genre : null,],
+                    , 'name' => 'genre_id', 'label' => 'Genre', 'value' => (isset($data->genre_id)) ? $data->genre : null,],
                     ['options'=>
                       Artist::all()->pluck('name','id')
                     , 'name' => 'artist_id', 'label' => 'Artist', 'value' => (isset($data->artist_id)) ? $data->artist : null,],

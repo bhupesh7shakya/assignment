@@ -86,7 +86,7 @@ abstract class SharedController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), $this->rules);
-
+        // dd($validator->validated());
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)

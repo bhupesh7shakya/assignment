@@ -8,6 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Music extends Model
 {
     use HasFactory;
+    public $fillable= [
+        "artist_id",
+        "genre_id",
+        "title",
+        "album_name"
+    ];
     public $with=[
         "genre",
         "artist"
