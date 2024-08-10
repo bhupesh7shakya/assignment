@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\GenreController;
+use App\Http\Controllers\MusicController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,6 +21,8 @@ Route::get('/', function () {
 });
 
 Route::resource('genres', GenreController::class);
+Route::resource('artists', ArtistController::class);
+Route::resource('musics', MusicController::class);
 Route::get('dashboard', function () {
     return 'test';
 })->name('admin.dashboard');
