@@ -194,8 +194,18 @@ abstract class SharedController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), $this->rules);
+        $rules=$this->rules;
+        foreach ($rules as $key => $rule) {
+            foreach ($rule as $index => $r) {
+                $find_unique_key=explode(":",$r)[0];
+                if ($find_unique_key=="unique") {
+                    $rules[$key][$index]=$rules[$key][$index].",".$id;
+                }
+            }
+        }
+        $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
+            // dd($validator->errors());
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();

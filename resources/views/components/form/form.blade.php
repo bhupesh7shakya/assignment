@@ -70,7 +70,7 @@
                     >
                     @foreach ($field['options'] as $key => $option)
                         <option @if ($field['value'] == $option) selected @endif value="{{ $key }}">
-                            {{ $option }}</option>
+                            {{ ucfirst($option )}}</option>
                     @endforeach
                 </select>
                 @error($field['name'])

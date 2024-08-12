@@ -97,7 +97,8 @@ class UserController extends SharedController
             "gender"=> ['required'],
             "address"=> ['required','min:3','max:255'],
             "dob"=> ['required','date'],
-            "phone"=> ['required']
+            "phone"=> ['required','unique:users,phone'],
+            "role"=>["required"]
         ]
     ];
     public $table_headers=["full name","role","email","address","dob","phone"];
@@ -123,6 +124,7 @@ class UserController extends SharedController
                     ['type'=>'date','name'=>'dob','label'=>'DOB','value'=>(isset($data->dob))?$data->dob:null,'placeholder'=>'DOB',],
 
                 ],
+
                 [
                     ['type'=>'number','name'=>'phone','label'=>'Phone','value'=>(isset($data->phone))?$data->phone:null,'placeholder'=>'phone',],
                     ['options'=>[
@@ -130,6 +132,14 @@ class UserController extends SharedController
                         'f'=>'female',
                         'o'=>'other',
                     ], 'name' => 'gender', 'label' => 'gender', 'value' => (isset($data->gender)) ? $data->gender : null,],
+                ],
+                [
+                    ['options'=>[
+                        'super_admin'=>'Super Admin',
+                        'artist'=>'Artist',
+                        'artist_manager'=>'Artist Manager',
+                    ], 'name' => 'role', 'label' => 'Role', 'value' => (isset($data->role)) ? $data->role : null,],
+                    []
                 ]
             ]
         ];
