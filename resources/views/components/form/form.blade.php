@@ -20,7 +20,8 @@
                                     @if (isset($field['class'])) {{ $field['class'] }} @endif
                             "
                         @endif
-                        {{-- for the date --}}
+                        {{-- for the date --}}\
+                        @if ($field['type']=='password')class="form-control" @endif
                         @if ($field['type'] == 'date') class="form-control ndp-nepali-calendar" @endif
                         {{-- checkbox oncheck event id --}}
                         @if ($field['type'] == 'checkbox') id="{{ $field['name'] }}click"

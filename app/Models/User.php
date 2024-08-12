@@ -38,6 +38,10 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $appends=[
+        "name"
+    ];
+
     /**
      * The attributes that should be cast.
      *
@@ -46,4 +50,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getNameAttribute($value){
+        return ucfirst($this->first_name). " ". ucfirst($this->last_name);
+    }
 }

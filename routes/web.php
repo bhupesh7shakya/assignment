@@ -26,6 +26,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('genres', GenreController::class);
     Route::resource('artists', ArtistController::class);
     Route::resource('musics', MusicController::class);
+    Route::resource('users', UserController::class);
     Route::get('dashboard', function () {
         return 'test';
     })->name('admin.dashboard');

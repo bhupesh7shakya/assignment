@@ -20,7 +20,7 @@ class UserController extends SharedController
         return view('admin.authentication.create');
     }
 
-    function register(Request $request)  {
+    function register(Request $request,$to="")  {
         $validator=Validator::make(
             $request->all(),
             [
@@ -37,6 +37,8 @@ class UserController extends SharedController
 
 
         if ($validator->fails()) {
+            dd($validator->errors());
+
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -47,6 +49,9 @@ class UserController extends SharedController
 
         $user=User::create($validated_data);
         session()->flash("success", "Registration Success! Now You can Login ");
+        if ($to != "") {
+            return redirect($to);
+        }
         return redirect('login');
         // return view('');
     }
@@ -59,7 +64,6 @@ class UserController extends SharedController
             ]
         );
         if ($validator->fails()) {
-
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -77,15 +81,27 @@ class UserController extends SharedController
         ->withInput();
     }
 
+    function store(Request $request) {
+        return $this->register($request,"users");
+    }
+
     public $title ="User Management";
     public $class_instance=User::class;
     public $route_name="users";
     public $rules=[
-        // todo user stuff....
-        "name"=>["required","unique:genres,name","max:20",]
+        [
+            "first_name"=>["required",],
+            "last_name"=>["required",],
+            "email"=> ['required','email','unique:users,email'],
+            "password"=> ['required','min:6','max:255','unique:users,password'],
+            "gender"=> ['required'],
+            "address"=> ['required','min:3','max:255'],
+            "dob"=> ['required','date'],
+            "phone"=> ['required']
+        ]
     ];
-    public $table_headers=["name"];
-    public $columns=["name"];
+    public $table_headers=["full name","role","email","address","dob","phone"];
+    public $columns=["name","role","email","address","dob","phone"];
 
     public function createForm($data = null,$method='post',$action='store')
     {
@@ -95,8 +111,26 @@ class UserController extends SharedController
             'fields' =>
             [
                 [
-                    ['type'=>'text','name'=>'name','label'=>'Name','value'=>(isset($data->name))?$data->name:null,'placeholder'=>'Name',],
+                    ['type'=>'text','name'=>'first_name','label'=>'First Name','value'=>(isset($data->first_name))?$data->first_name:null,'placeholder'=>'First Name',],
+                    ['type'=>'text','name'=>'last_name','label'=>'Last Name','value'=>(isset($data->last_name))?$data->last_name:null,'placeholder'=>'Last name',],
                 ],
+                [
+                    ['type'=>'text','name'=>'email','label'=>'Email','value'=>(isset($data->email))?$data->email:null,'placeholder'=>'Email',],
+                    ['type'=>'password','name'=>'password','label'=>'Password','value'=>(isset($data->password))?$data->password:null,'placeholder'=>'Password',],
+                ],
+                [
+                    ['type'=>'text','name'=>'address','label'=>'Address','value'=>(isset($data->address))?$data->address:null,'placeholder'=>'Address',],
+                    ['type'=>'date','name'=>'dob','label'=>'DOB','value'=>(isset($data->dob))?$data->dob:null,'placeholder'=>'DOB',],
+
+                ],
+                [
+                    ['type'=>'number','name'=>'phone','label'=>'Phone','value'=>(isset($data->phone))?$data->phone:null,'placeholder'=>'phone',],
+                    ['options'=>[
+                        'm'=>'male',
+                        'f'=>'female',
+                        'o'=>'other',
+                    ], 'name' => 'gender', 'label' => 'gender', 'value' => (isset($data->gender)) ? $data->gender : null,],
+                ]
             ]
         ];
 
