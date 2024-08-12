@@ -11,32 +11,6 @@
                 <span class="text">Dashboard</span>
             </a>
         </li>
-
-        <li>
-            <a href="{{route('category.index')}}">
-                <i class='bx bxs-category-alt'></i>
-                <span class="text">Category</span>
-            </a>
-        </li>
-        <li>
-            <a href="{{route('products.index')}}">
-                <i class='bx bxl-product-hunt' ></i>
-                <span class="text">Product</span>
-            </a>
-        </li>
-        <li>
-            <a href="{{ route('inventories.index') }}">
-                <i class='bx bx-list-ul' ></i>
-                 <span class="text">Inventory</span>
-            </a>
-        </li>
-        <a href="{{route('order.index')}}">
-        <li>
-
-            <i class='bx bx-package' ></i>
-                <span class="text">Orders</span>
-            </a>
-        </li>
     </ul>
     <ul class="side-menu">
         <li>
