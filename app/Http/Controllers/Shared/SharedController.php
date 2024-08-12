@@ -24,7 +24,9 @@ abstract class SharedController extends Controller
     public function index(Request $request)
     {
         // return $this->currentFiscalYear();
-
+        if (Gate::denies('viewAny',$this->class_instance)) {
+            abort(403,"You do not have permssion for this action");
+        }
         if ($request->ajax()) {
             if(isset($this->relation)){
                 $data = $this->class_instance::with($this->relation)->get();
@@ -86,6 +88,9 @@ abstract class SharedController extends Controller
      */
     public function create()
     {
+        if (Gate::denies('create',$this->class_instance)) {
+            abort(403,"You do not have permssion for this action");
+        }
         $data['route_name'] = $this->route_name;
         $data['title'] = $this->title;
         $data['model'] = $this->class_instance;
@@ -111,6 +116,9 @@ abstract class SharedController extends Controller
      */
     public function store(Request $request)
     {
+        if (Gate::denies('create',$this->class_instance)) {
+            abort(403,"You do not have permssion for this action");
+        }
         $validator = Validator::make($request->all(), $this->rules);
         // dd($validator->validated());
         if ($validator->fails()) {
@@ -136,6 +144,9 @@ abstract class SharedController extends Controller
      */
     public function show($id)
     {
+        if (Gate::denies('view_any',$this->class_instance)) {
+            abort(403,"You do not have permssion for this action");
+        }
         $data['view_only'] = true;
         $data['route_name'] = '#';
         $data['title'] = $this->title;
@@ -165,6 +176,9 @@ abstract class SharedController extends Controller
      */
     public function edit($id)
     {
+        if (Gate::denies('update',$this->class_instance)) {
+            abort(403,"You do not have permssion for this action");
+        }
         $data['route_name'] = $this->route_name;
         $data['title'] = $this->title;
         $data['data'] = $this->class_instance::find($id);
@@ -194,6 +208,9 @@ abstract class SharedController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if (Gate::denies('update',$this->class_instance)) {
+            abort(403,"You do not have permssion for this action");
+        }
         $rules=$this->rules;
         foreach ($rules as $key => $rule) {
             foreach ($rule as $index => $r) {
@@ -226,6 +243,9 @@ abstract class SharedController extends Controller
      */
     public function destroy($id)
     {
+        if (Gate::denies('delete',$this->class_instance)) {
+            abort(403,"You do not have permssion for this action");
+        }
         $instance = $this->class_instance::find($id);
 
         return ($instance->delete()) ?
