@@ -1,8 +1,11 @@
 @extends('admin.layouts.main')
 
+
 @section('admin-content')
+@can('viewAny', $data['model'])
+
     @if (isset($data['no_create']) &&$data['no_create'] == true)
-        <x-card.card :title="['title' => $data['title']]">
+        <x-card.card :title="['title' => $data['title'],'model'=>$data['model']]" >
             {{-- start card --}}
             {{-- start table --}}
             <x-table.table :tableHeaders="$data['table_headers']" />
@@ -11,7 +14,7 @@
         </x-card.card>
         {{-- end of card --}}
     @else
-        <x-card.card :title="['title' => $data['title'], 'route' => route($data['route_name'] . '.create')]">
+        <x-card.card :title="['title' => $data['title'], 'route' => route($data['route_name'] . '.create'),'model'=>$data['model']]">
             {{-- start card --}}
             {{-- start table --}}
             <x-table.table :tableHeaders="$data['table_headers']" />
@@ -20,6 +23,14 @@
         </x-card.card>
         {{-- end of card --}}
     @endif
+    @else
+    <div class="container d-flex justify-content-center align-content-center" style="height:20vw">
+        <div class="message-box">
+            <h1 class="display-4">Access Denied</h1>
+            <p class="lead">You do not have permission to view this page.</p>
+        </div>
+    </div>
+    @endcan
 @endsection
 {{-- custom script start --}}
 @section('admin-scripts')

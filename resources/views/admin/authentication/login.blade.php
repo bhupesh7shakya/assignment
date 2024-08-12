@@ -1,11 +1,13 @@
 @extends('layouts.app')
 @section('content')
-<div class="center">
-    <x-card.card title="Admin Login">
+<div class="d-flex justify-content-center align-items-center" style="height:100vh">
+    <x-card.card title="AMS Login">
         <center>
             <img class="img-thumbnail border-0"  width="300" src="{{asset('images/undraw_secure_login_pdn4.png')}}" alt="" srcset="">
         </center>
-        <form method="post" action="{{route('admin.authentication')}}" class="needs-validation" novalidate>
+        <form method="post" action="
+        {{-- {{route('admin.authentication')}} --}}
+        " class="needs-validation" novalidate>
             @csrf
             <div class="mb-3">
               <label for="exampleInputEmail1" class="form-label">Email address</label>
@@ -36,5 +38,6 @@
           <p class="bg-danger p-3">{{session('msg')}}</p>
         @endif
 </div>
-
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<x-script.alert></x-script.alert>
 @endsection

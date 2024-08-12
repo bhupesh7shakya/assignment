@@ -5,9 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Shared\SharedController;
 use App\Models\Artist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ArtistController extends SharedController
 {
+
+    public function index(Request $request){
+        // if (Gate::denies('manage-artists')) {
+        //     abort(403,'Unauthorized');
+        // }
+        return parent::index($request);
+    }
     public $title ="Artist";
     public $class_instance=Artist::class;
     public $route_name="artists";

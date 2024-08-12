@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Shared;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
@@ -32,17 +33,39 @@ abstract class SharedController extends Controller
                 $data = $this->class_instance::all()
                 ->where('is_deleted', 0);
             }
+
             return DataTables::of($data)
-                ->addIndexColumn()
-                ->addColumn('action', function ($row) {
-                    return '<div class="text-center">
-                                <a href="' . route("{$this->route_name}.edit", "{$row['id']}") . '">
-                                     <button  type="button" class="btn btn-primary" ><i class="ti ti-edit"></i></button>
+            ->addIndexColumn()
+            ->addColumn('action', function ($row) {
+                $delete_button='
+                <button  type="button" class="btn btn-danger tabler-card" disabled ><i class="ti ti-trash"></i></i></button>';
+                if (!Gate::denies('delete',$this->class_instance)) {
+                        $delete_button='
+                                   <button onclick="del(' . $row['id'] . ')" type="button" class="btn btn-danger" ><i class="ti ti-trash"></i></i></button>
+
+                        ';
+
+                    }
+                $edit_button='
+                     <a href="#" disabled>
+                                     <button  type="button" class="btn btn-primary" disabled  ><i class="ti ti-edit"></i></button>
                                 </a>
+
+                ';
+                if (!Gate::denies('update',$this->class_instance)) {
+
+                    $edit_button='
+                             <a href="' . route("{$this->route_name}.edit", "{$row['id']}") . '" >
+                                     <button  type="button" class="btn btn-primary"  ><i class="ti ti-edit"></i></button>
+                                </a>';
+
+                }
+                    return '<div class="text-center">
+                                '.$edit_button.'
                                 <!-- <a href="' . route("{$this->route_name}.show", "{$row['id']}") . '">
                                     <button  type="button" class="btn btn-primary" ><i class="fa fa-eye"></i></button>
                                  </a>-->
-                               <button onclick="del(' . $row['id'] . ')" type="button" class="btn btn-danger" ><i class="ti ti-trash"></i></i></button>
+            '.$delete_button.'
                             </div>';
                 })
                 ->rawColumns(['action'])
@@ -52,6 +75,7 @@ abstract class SharedController extends Controller
         $data['route_name'] = $this->route_name;
         $data['table_headers'] = $this->table_headers;
         $data['columns'] = $this->columns;
+        $data['model'] = $this->class_instance;
         return view($this->view_path . '.index', compact('data'));
     }
 
@@ -64,6 +88,8 @@ abstract class SharedController extends Controller
     {
         $data['route_name'] = $this->route_name;
         $data['title'] = $this->title;
+        $data['model'] = $this->class_instance;
+
         /*
             createForm() :- createes a form araay and set to $form variable of class
         */
@@ -114,6 +140,8 @@ abstract class SharedController extends Controller
         $data['route_name'] = '#';
         $data['title'] = $this->title;
         $data['data'] = $this->class_instance::find($id);
+        $data['model'] = $this->class_instance;
+
         /*
                 createForm() :- createes a form araay and set to $form variable of class
             */
@@ -140,6 +168,8 @@ abstract class SharedController extends Controller
         $data['route_name'] = $this->route_name;
         $data['title'] = $this->title;
         $data['data'] = $this->class_instance::find($id);
+        $data['model'] = $this->class_instance;
+
         /*
             createForm() :- createes a form araay and set to $form variable of class
         */

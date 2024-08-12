@@ -29,6 +29,11 @@
     <link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.0.0-beta10/dist/css/tabler.min.css">
     {{-- tabler --}}
     <title>{{ ucwords(str_replace('.', ' ', Route::currentRouteName())) }}</title>
+    <style>
+             .tabler-card:hover {
+            cursor: none;
+        }
+    </style>
 </head>
 
 <body>
