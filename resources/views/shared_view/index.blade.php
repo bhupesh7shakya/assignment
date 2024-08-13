@@ -16,6 +16,26 @@
     @else
         <x-card.card :title="['title' => $data['title'], 'route' => route($data['route_name'] . '.create'),'model'=>$data['model']]">
             {{-- start card --}}
+            @can('importExport',$data['model'])
+
+            <div class="p-3 d-flex justify-content-between">
+
+                <a class="btn btn-primary" href="{{route($data['route_name'].'.export')}}"/>Export</a>
+
+                <form action="{{route($data['route_name'].'.import')}}" enctype="multipart/form-data" method="post">
+                    @csrf
+                    <input type="file" name="file" id="" class="form">
+                @error("file")
+                    <br>
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
+                <button type="submit" class="btn btn-primary">Import</button>
+
+                </form>
+
+            </div>
+            @endcan
+
             {{-- start table --}}
             <x-table.table :tableHeaders="$data['table_headers']" />
 

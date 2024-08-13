@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ArtistExport;
 use App\Http\Controllers\Shared\SharedController;
+use App\Imports\ArtistImport;
 use App\Models\Artist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
+use PhpOffice\PhpSpreadsheet\Writer\Csv;
 
 class ArtistController extends SharedController
 {
@@ -55,5 +60,31 @@ class ArtistController extends SharedController
             ]
         ];
 
+    }
+
+    public function export(){
+        return Excel::download(new ArtistExport,'artist.csv');
+    }
+
+    public function import(Request $request)
+    {
+        $validator=Validator::make(
+            $request->all(),
+            [
+                "file"=>["required","file"],
+            ]
+        );
+
+
+        if ($validator->fails()) {
+            // dd($validator->errors());
+
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        Excel::import(new ArtistImport, $request->file('file')->store('temp'));
+
+        return back()->with('success', 'Users imported successfully!');
     }
 }
