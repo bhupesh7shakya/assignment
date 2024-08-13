@@ -32,7 +32,8 @@ Route::middleware(['auth'])->group(function () {
     })->name('admin.dashboard');
     Route::get('logout',function ()  {
         Auth::logout();
-    });
+        return redirect("/login");
+    })->name('logout');
 });
 
 Route::get("login/",[UserController::class,"login_index"])->name("login");

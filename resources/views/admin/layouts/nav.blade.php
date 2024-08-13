@@ -173,8 +173,8 @@
                     {{-- <a href="#" class="dropdown-item">Welcome, {{ Auth::user()->name }} --}}
                     </a>
                     <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">Settings</a>
-                    {{-- <a href="{{route('logout')}}" class="dropdown-item">Logout</a> --}}
+                    {{-- <a href="#" class="dropdown-item">Settings</a> --}}
+                    <a href="{{route('logout')}}" class="dropdown-item">Logout</a>
                 </div>
             </div>
         </div>

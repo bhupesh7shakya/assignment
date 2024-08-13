@@ -31,13 +31,13 @@ class UserController extends SharedController
                 "gender"=> ['required'],
                 "address"=> ['required','min:3','max:255'],
                 "dob"=> ['required','date'],
-                "phone"=> ['required']
+                "phone"=> ['required','regex:/^(98|97)\d{8}$/']
             ]
         );
 
 
         if ($validator->fails()) {
-            dd($validator->errors());
+            // dd($validator->errors());
 
             return redirect()->back()
                 ->withErrors($validator)
