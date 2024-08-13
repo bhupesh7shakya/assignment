@@ -17,6 +17,7 @@
         <x-card.card :title="['title' => $data['title'], 'route' => route($data['route_name'] . '.create'),'model'=>$data['model']]">
             {{-- start card --}}
             @can('importExport',$data['model'])
+            @if ($data['route_name']=="artist")
 
             <div class="p-3 d-flex justify-content-between">
 
@@ -34,6 +35,8 @@
                 </form>
 
             </div>
+            @endif
+
             @endcan
 
             {{-- start table --}}

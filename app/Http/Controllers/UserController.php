@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Shared\SharedController;
 use App\Models\User;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -44,6 +45,11 @@ class UserController extends SharedController
                 ->withInput();
         }
         $validated_data=$validator->validated();
+        if ($request->role) {
+            $validated_data['role']=$request->role;
+        }else{
+            $validated_data['role']="artist_manager";
+        }
 
         $validated_data['password']=Hash::make($validated_data['password']);
 
