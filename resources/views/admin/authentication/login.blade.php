@@ -29,11 +29,16 @@
             </div> --}}
             <button type="submit" class="btn  float-end btn-outline-info">
                 <label style="white-space:nowrap;">Login</label>
-                {{-- <span class="material-icons">
+            </button>
+
+            {{-- <span class="material-icons">
                 login
-                </span></button> --}}
-          </form>
-        </x-card>
+            </span></button> --}}
+        </form>
+        <br>
+
+            <a  href="{{route("user.register")}}">Register Now</a>
+            </x-card>
         @if (session('msg'))
           <p class="bg-danger p-3">{{session('msg')}}</p>
         @endif

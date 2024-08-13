@@ -11,15 +11,69 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Writer\Csv;
+use Yajra\DataTables\Facades\DataTables;
 
 class ArtistController extends SharedController
 {
 
-    public function index(Request $request){
-        // if (Gate::denies('manage-artists')) {
-        //     abort(403,'Unauthorized');
-        // }
-        return parent::index($request);
+    public function index(Request $request)
+    {
+        // return $this->currentFiscalYear();
+        if (Gate::denies('viewAny',$this->class_instance)) {
+            abort(403,"You do not have permssion for this action");
+        }
+        if ($request->ajax()) {
+            if(isset($this->relation)){
+                $data = $this->class_instance::with($this->relation)->get();
+            }else{
+
+                $data = $this->class_instance::all()
+                ->where('is_deleted', 0);
+            }
+
+            return DataTables::of($data)
+            ->addIndexColumn()
+            ->addColumn('action', function ($row) {
+                $delete_button='
+                <button  type="button" class="btn btn-danger tabler-card" disabled ><i class="ti ti-trash"></i></i></button>';
+                if (!Gate::denies('delete',$this->class_instance)) {
+                        $delete_button='
+                                   <button onclick="del(' . $row['id'] . ')" type="button" class="btn btn-danger" ><i class="ti ti-trash"></i></i></button>
+
+                        ';
+
+                    }
+                $edit_button='
+                     <a href="#" disabled>
+                                     <button  type="button" class="btn btn-primary" disabled  ><i class="ti ti-edit"></i></button>
+                                </a>
+
+                ';
+                if (!Gate::denies('update',$this->class_instance)) {
+
+                    $edit_button='
+                             <a href="' . route("{$this->route_name}.edit", "{$row['id']}") . '" >
+                                     <button  type="button" class="btn btn-primary"  ><i class="ti ti-edit"></i></button>
+                                </a>';
+
+                }
+                    return '<div class="text-center">
+                                '.$edit_button.'
+                                <a href="' .route("musics.index",) . '?artist_id='.$row['id'].'">
+                                    <button  type="button" class="btn btn-primary" ><i class="fa fa-eye">🎵</i></button>
+                                 </a>
+            '.$delete_button.'
+                            </div>';
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        $data['title'] = $this->title;
+        $data['route_name'] = $this->route_name;
+        $data['table_headers'] = $this->table_headers;
+        $data['columns'] = $this->columns;
+        $data['model'] = $this->class_instance;
+        return view($this->view_path . '.index', compact('data'));
     }
     public $title ="Artist";
     public $class_instance=Artist::class;

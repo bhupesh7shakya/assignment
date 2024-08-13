@@ -23,6 +23,8 @@ abstract class SharedController extends Controller
     public $relation;
     public function index(Request $request)
     {
+        // return     $data = $this->class_instance::all();
+
         // return $this->currentFiscalYear();
         if (Gate::denies('viewAny',$this->class_instance)) {
             abort(403,"You do not have permssion for this action");
@@ -35,10 +37,12 @@ abstract class SharedController extends Controller
                 $data = $this->class_instance::all()
                 ->where('is_deleted', 0);
             }
+            // dd($data);
 
             return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {
+
                 $delete_button='
                 <button  type="button" class="btn btn-danger tabler-card" disabled ><i class="ti ti-trash"></i></i></button>';
                 if (!Gate::denies('delete',$this->class_instance)) {
