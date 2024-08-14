@@ -52,7 +52,6 @@ class MusicController extends SharedController
         if ($request->ajax()) {
             // dd($data);
             Session::remove('artist_id');
-
             return DataTables::of($data)
             ->addIndexColumn()
             ->addColumn('action', function ($row) {

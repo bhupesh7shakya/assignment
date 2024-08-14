@@ -15,4 +15,8 @@ class Artist extends Model
         "first_release_year",
         "no_of_albums_released",
     ];
+
+    public function musics() {
+        return $this->hasMany(Music::class);
+    }
 }

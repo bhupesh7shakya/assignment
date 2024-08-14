@@ -28,10 +28,22 @@
     <script src="https://unpkg.com/@tabler/core@1.0.0-beta10/dist/js/tabler.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/@tabler/core@1.0.0-beta10/dist/css/tabler.min.css">
     {{-- tabler --}}
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="//cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
     <title>{{ ucwords(str_replace('.', ' ', Route::currentRouteName())) }}</title>
     <style>
              .tabler-card:hover {
             cursor: none;
+        }
+
+
+        .ct-chart {
+            width: 500px;  /* Set the width of the chart */
+            height: 400px; /* Set the height of the chart */
+        }
+        .linechart{
+            width: 500px;  /* Set the width of the chart */
+            height: 400px; /* Set the height of the chart */
         }
     </style>
 </head>

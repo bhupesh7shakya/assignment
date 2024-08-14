@@ -1,4 +1,5 @@
 @extends('admin.layouts.main')
+
 @section('admin-content')
     <div class="my-3 row row-cards">
         <div class="col-sm-6 col-lg-4">
@@ -22,10 +23,10 @@
                         </div>
                         <div class="col">
                             <div class="font-weight-medium display-7">
-                                No of Orders
+                                No of Artist
                             </div>
                             <div class="text-muted">
-                                No:- {{ $data['no_of_orders'] }}
+                                No:- {{ $data['no_of_artist'] }}
                             </div>
                         </div>
                     </div>
@@ -53,10 +54,10 @@
                         </div>
                         <div class="col">
                             <div class="font-weight-medium display-7">
-                                No of Consumer
+                                No of Musics
                             </div>
                             <div class="text-muted">
-                                No:- {{ $data['no_of_orders'] }}
+                                No:- {{ $data['no_of_musics'] }}
                             </div>
                         </div>
                     </div>
@@ -85,10 +86,10 @@
                         </div>
                         <div class="col">
                             <div class="font-weight-medium display-7">
-                                Total Completed Orders
+                                Total Genre
                             </div>
                             <div class="text-muted">
-                                No:- {{ $data['completed'] }}
+                                No:- {{ $data['no_of_genre'] }}
 
                             </div>
                         </div>
@@ -97,7 +98,7 @@
             </div>
         </div>
     </div>
-    <div class="card">
+    {{-- < class="card">
         <div class="card-header">
             <h3 class="card-title">Recent Orders</h3>
         </div>
@@ -126,5 +127,95 @@
                 </table>
 
             </div>
+        </div> --}}
+
+        <div class="card p-5 ">
+            Total Music by Genere
+            <div class="ct-chart">
+
+            </div>
         </div>
-    @endsection
+
+        <div class="card p-5 d-flex justify-content-center align-item-center">
+            Total Music by Genere
+            <div class="linechart">
+
+            </div>
+        </div>
+
+@endsection
+
+@section('custom-scripts')
+    <script>
+        $(document).ready(function() {
+            let = chart = new Chartist.Pie('.ct-chart', {
+                series: [20, 10, 30, ],
+                labels: ['Bananas', 'Apples', 'Grapes'],
+
+            }, {
+                donut: true,
+                donutWidth: 60,
+                donutSolid: true,
+                startAngle: 360,
+                showLabel: true
+            });
+            $.ajax({
+                type: "get",
+                url: "{{ route('admin.dashboard') }}",
+                success: function(response) {
+
+                    response = response['total_genre_musics']
+                    // console.log({response});
+                    data = []
+                    data['series'] = response.map((res) => res.musics_count)
+                    data['labels'] = response.map((res) => res.name)
+
+                    chart.update({
+                        labels: data['labels'],
+                        series: data['series']
+                    })
+
+                }
+            });
+
+
+            var data = {
+                labels: ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8', 'W9', 'W10'],
+                series: [
+                    [1, 2, 4, 8, 6, -2, -1, -4, -6, -2]
+                ]
+            };
+
+            var options = {
+                high: 10,
+                low: 0,
+                axisX: {
+                    labelInterpolationFnc: function(value, index) {
+                        return index % 1 === 0 ? value : null;
+                    }
+                }
+            };
+
+            let line_chart = new Chartist.Bar('.linechart', data, options);
+            $.ajax({
+                type: "get",
+                url: "{{ route('admin.dashboard') }}",
+
+                success: function(response) {
+                    response = response['top_five_artist']
+                    data = []
+                    data['series'] = response.map((res) => res.musics_count)
+                    data['labels'] = response.map((res) => res.name)
+
+                    console.log({
+                        data
+                    });
+                    line_chart.update({
+                        labels: data['labels'],
+                        series: [data['series']]
+                    })
+                }
+            });
+        });
+    </script>
+@endsection

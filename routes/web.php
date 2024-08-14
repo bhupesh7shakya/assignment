@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\ArtistController;
+use App\Http\Controllers\DashBoardController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\MusicController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,9 +33,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('artists.import');
     Route::resource('musics', MusicController::class);
     Route::resource('users', UserController::class);
-    Route::get('dashboard', function () {
-        return 'test';
-    })->name('admin.dashboard');
+    Route::get('dashboard', [DashBoardController::class,'index'])->name('admin.dashboard');
     Route::get('logout',function ()  {
         Auth::logout();
         return redirect("/login");
