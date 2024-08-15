@@ -4,30 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Shared\SharedController;
 use App\Models\Album;
-use App\Models\Artist;
-use App\Models\Genre;
-use App\Models\Music;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use PharIo\Manifest\Author;
 use Yajra\DataTables\Facades\DataTables;
 
-class MusicController extends SharedController
+class AlbumController extends SharedController
 {
-    public $title ="Music";
-    public $class_instance=Music::class;
-    public $route_name="musics";
+    //
+    public $title ="Album";
+    public $class_instance=Album::class;
+    public $route_name="albums";
     public $rules=[
-        "title"=>["required","max:20",],
-        "album_id"=>["required","max:20","exists:albums,id"],
-        "genre_id"=>["required","exists:genres,id"],
-        // "artist_id"=>["required","exists:artists,id"],
+        "name"=>["required","max:20",],
     ];
-    public $table_headers=["title","album_name","genre_id","artist",];
-    public $columns=["title","album.name","genre.name","artist.name",];
+    public $table_headers=["album_name","music_count"];
+    public $columns=["name","music_count"];
 
     public function index(Request $request)
     {
@@ -51,24 +45,17 @@ class MusicController extends SharedController
             if (Auth::user()->role!="super_admin") {
                 $data=$data->where('user_id',Auth::user()->id);
             }
-            $data=$data->get();
+            $data->get();
         }else{
-            if (Auth::user()->role!="super_admin") {
-                $userId = Auth::id();
-
-                // Step 2: Get the IDs of artists associated with the authenticated user
-                $artistIds = Artist::where('user_id', $userId)->pluck('id')->toArray();
-
-                // Step 3: Combine the user ID and artist IDs into a single array
-                $ids = array_merge([$userId], $artistIds);
-
-                // Step 4: Query the model based on the combined IDs
-                $data = $this->class_instance::with('album')->whereIn('artist_id', $ids)->get();
+            $data = $this->class_instance::withCount('music');
+            // dd(Auth::user()->role );
+            // Apply the role-based filter if the user is not a super admin
+            if (!in_array(Auth::user()->role , ["super_admin","artist_manager"])) {
+                $data = $data->where('user_id', Auth::user()->id);
             }
-            else{
-                // dd(Auth::user()->role!="super_admin");
-                $data=$this->class_instance::with('album')->get();
-            }
+
+            // Get the results
+            $data = $data->get();
 
         }
         }
@@ -121,7 +108,6 @@ class MusicController extends SharedController
         return view($this->view_path . '.index', compact('data'));
     }
 
-
     public function store(Request $request)
     {
         if (Gate::denies('create',$this->class_instance)) {
@@ -135,8 +121,7 @@ class MusicController extends SharedController
                 ->withInput();
         }
         $validated=$validator->validated();
-        $validated['artist_id']= Artist::all()->where('user_id',Auth::user()->id)->first()->id;
-        // return $validated;
+        $validated['user_id']=Auth::user()->id;
         if ($this->class_instance::create($validated)) {
             session()->flash("success", "Data inserted successfully");
             return redirect()->route("{$this->route_name}.index");
@@ -145,8 +130,6 @@ class MusicController extends SharedController
             return redirect()->route("{$this->route_name}.index");
         }
     }
-
-
     public function createForm($data = null,$method='post',$action='store')
     {
         $this->form = [
@@ -155,19 +138,7 @@ class MusicController extends SharedController
             'fields' =>
             [
                 [
-                    ['type'=>'text','name'=>'title','label'=>'Title','value'=>(isset($data->title))?$data->title:null,'placeholder'=>'Title',],
-                    ['options'=>
-                      Album::all()->where('user_id',Auth::user()->id)->pluck('name','id')
-                    , 'name' => 'album_id', 'label' => 'Album', 'value' => (isset($data->album_id)) ? $data->album : null,],                ],
-                [
-
-                    ['options'=>
-                      Genre::all()->pluck('name','id')
-                    , 'name' => 'genre_id', 'label' => 'Genre', 'value' => (isset($data->genre_id)) ? $data->genre : null,],
-                    // ['options'=>
-                    //   Artist::where('user_id',Auth::user()->id)->pluck('name','id')
-                    // , 'name' => 'artist_id', 'label' => 'Artist', 'value' => (isset($data->artist_id)) ? $data->artist : null,],
-                    []
+                    ['type'=>'text','name'=>'name','label'=>'name','value'=>(isset($data->name))?$data->name:null,'placeholder'=>'name',],
                 ],
             ]
         ];

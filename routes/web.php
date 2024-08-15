@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\DashBoardController;
 use App\Http\Controllers\GenreController;
@@ -32,6 +33,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('artists-import', [ArtistController::class,'import'])
         ->name('artists.import');
     Route::resource('musics', MusicController::class);
+    Route::resource('albums', AlbumController::class);
     Route::resource('users', UserController::class);
     Route::get('dashboard', [DashBoardController::class,'index'])->name('admin.dashboard');
     Route::get('logout',function ()  {

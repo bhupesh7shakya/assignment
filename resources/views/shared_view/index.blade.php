@@ -6,6 +6,7 @@
 
     @if (isset($data['no_create']) &&$data['no_create'] == true)
         <x-card.card :title="['title' => $data['title'],'model'=>$data['model']]" >
+
             {{-- start card --}}
             {{-- start table --}}
             <x-table.table :tableHeaders="$data['table_headers']" />
@@ -17,8 +18,10 @@
         <x-card.card :title="['title' => $data['title'], 'route' => route($data['route_name'] . '.create'),'model'=>$data['model']]">
             {{-- start card --}}
             @can('importExport',$data['model'])
-            @if ($data['route_name']=="artist")
-
+            @if ($data['route_name']=="artists")
+            <br>
+            <br>
+            <br>
             <div class="p-3 d-flex justify-content-between">
 
                 <a class="btn btn-primary" href="{{route($data['route_name'].'.export')}}"/>Export</a>
@@ -35,6 +38,7 @@
                 </form>
 
             </div>
+            <br>
             @endif
 
             @endcan

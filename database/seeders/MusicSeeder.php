@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Album;
 use App\Models\Artist;
 use App\Models\Genre;
 use App\Models\Music;
@@ -22,11 +23,16 @@ class MusicSeeder extends Seeder
 
         // Create multiple music records
         foreach ($artists as $artist) {
+            $a=Album::create(
+                [
+                    'name'=>"Album ".fake()->name()
+                ]
+            );
             for ($i = 1; $i <= 5; $i++) {
                 Music::create([
                     'artist_id' => $artist->id,
                     'title' => 'Song Title ' . $i . ' by ' . $artist->name,
-                    'album_name' => 'Album Name ' . $i . ' by ' . $artist->name,
+                    'album_id' => $a->id,
                     'genre_id' => $genres->random()->id, // Assign random genre
                 ]);
             }

@@ -4,10 +4,12 @@ namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
 
+use App\Models\Album;
 use App\Models\Artist;
 use App\Models\Genre;
 use App\Models\Music;
 use App\Models\User;
+use App\Policies\AlbumPolicy;
 use App\Policies\ArtistPolicy;
 use App\Policies\GenrePolicy;
 use App\Policies\MusicPolicy;
@@ -28,6 +30,7 @@ class AuthServiceProvider extends ServiceProvider
         Music::class => MusicPolicy::class,
         Genre::class => GenrePolicy::class,
         User::class => UserPolicy::class,
+        Album::class => AlbumPolicy::class,
     ];
 
     /**

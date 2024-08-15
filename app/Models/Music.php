@@ -12,7 +12,7 @@ class Music extends Model
         "artist_id",
         "genre_id",
         "title",
-        "album_name"
+        "album_id"
     ];
     public $with=[
         "genre",
@@ -25,5 +25,9 @@ class Music extends Model
 
     public function artist(){
         return $this->belongsTo(Artist::class);
+    }
+
+    public function album()  {
+        return $this->belongsTo(Album::class);
     }
 }

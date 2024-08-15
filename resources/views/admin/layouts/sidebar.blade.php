@@ -34,6 +34,10 @@
                     'name'=>'musics',
                     'route'=>'musics.index',
                 ],
+                [
+                    'name'=>'albums',
+                    'route'=>'albums.index',
+                ],
 
 
                 ]

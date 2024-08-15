@@ -128,21 +128,22 @@
 
             </div>
         </div> --}}
+    <div class="d-flex justify-content-center align-item-center">
 
-        <div class="card p-5 ">
+        <div class="card p-4 ">
             Total Music by Genere
             <div class="ct-chart">
 
             </div>
         </div>
 
-        <div class="card p-5 d-flex justify-content-center align-item-center">
+        <div class="card p-5 ">
             Total Music by Genere
             <div class="linechart">
 
             </div>
         </div>
-
+    </div>
 @endsection
 
 @section('custom-scripts')
@@ -191,8 +192,10 @@
                 low: 0,
                 axisX: {
                     labelInterpolationFnc: function(value, index) {
+                    return value;
                         return index % 1 === 0 ? value : null;
                     }
+
                 }
             };
 
