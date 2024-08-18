@@ -15,4 +15,6 @@ class Genre extends Model
     public function musics()  {
         return $this->hasMany(Music::class);
     }
+
+    
 }

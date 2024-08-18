@@ -29,26 +29,26 @@ class ArtistPolicy
     public function create(User $user)
     {
         // Only artist_manager can create artists
-        return $user->role === 'artist_manager';
+        return in_array($user->role, ['super_admin', 'artist_manager']);
     }
 
     public function update(User $user,)
     {
         // Only artist_manager can update artists
-        return $user->role === 'artist_manager';
+        return in_array($user->role, ['super_admin', 'artist_manager']);
     }
 
     public function delete(User $user,)
     {
         // Only artist_manager can delete artists
-        return $user->role === 'artist_manager';
+        return in_array($user->role, ['super_admin', 'artist_manager']);
     }
 
     public function importExport(User $user)
     {
         // Only artist_manager can import/export artists
         // return true;
-        return $user->role === 'artist_manager';
+        return in_array($user->role, ['super_admin', 'artist_manager']);
     }
 
     public function listSongs(User $user, Artist $artist)

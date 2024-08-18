@@ -9,6 +9,7 @@ use App\Models\Album;
 use App\Models\Artist;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -110,11 +111,11 @@ class ArtistController extends SharedController
                 ->withInput();
         }
         $validated = $validator->validated();
-        if ($object=$this->class_instance::create($validated)) {
-            $validated['password']=Hash::make($validated['password']);
-            $validated['role']="artist";
-            $user=User::create($validated);
-            $object->user_id=$user->id;
+        if ($object = $this->class_instance::create($validated)) {
+            $validated['password'] = Hash::make($validated['password']);
+            $validated['role'] = "artist";
+            $user = User::create($validated);
+            $object->user_id = $user->id;
             $object->save();
             session()->flash("success", "Data inserted successfully");
             return redirect()->route("{$this->route_name}.index");
@@ -126,7 +127,7 @@ class ArtistController extends SharedController
 
     public function createForm($data = null, $method = 'post', $action = 'store')
     {
-        $this->form = [
+       $form = [
             'route' => route($this->route_name . '.' . $action, (isset($data->id) ? $data->id : null)),
             'method' => $method,
             'fields' =>
@@ -158,9 +159,20 @@ class ArtistController extends SharedController
                 [
                     ['type' => 'date', 'name' => 'dob', 'label' => 'Date Of Birth', 'value' => (isset($data->dob)) ? $data->dob : null, 'placeholder' => 'Date of Birth',],
 
+                    // (Auth::user()->role == "super_admin")?
+
+                    //         ['options' =>
+                    //           User::where('role','artist_manager')->pluck('email','id')
+                    //         , 'name' => 'user_id', 'label' => 'Assign Manager', 'value' => (isset($data->user_id)) ? $data->user_id : null,]
+                    //     :[]
+                        // dd($this->form);
+
                 ]
             ]
         ];
+        $this->form=$form;
+        // dd($form);
+        // dd(Auth::user()->role);
     }
 
     public function export()
@@ -173,11 +185,11 @@ class ArtistController extends SharedController
         $validator = Validator::make(
             $request->all(),
             [
-                "file" => ["required", "file"],
+                "file" => ["required", "file", "max:20480"],
             ]
         );
 
-
+        // return $request->file('file');
         if ($validator->fails()) {
             // dd($validator->errors());
 
@@ -186,7 +198,6 @@ class ArtistController extends SharedController
                 ->withInput();
         }
         Excel::import(new ArtistImport, $request->file('file')->store('temp'));
-
         return back()->with('success', 'Users imported successfully!');
     }
 }
