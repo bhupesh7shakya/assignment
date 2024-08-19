@@ -130,7 +130,7 @@ class Music extends Model
                 $sql = "
                     SELECT $tableName.*,
                            artists.name AS artist_name,
-                           albums.title AS album_title,
+                           albums.name AS album_name,
                            genres.name AS genre_name
                     FROM $tableName
                     LEFT JOIN artists ON $tableName.artist_id = artists.id

@@ -17,7 +17,7 @@ class DashBoardController extends Controller
         $data['no_of_genre']=Genre::all()->count();
         if ($request->ajax()) {
             # code...
-            $data['total_genre_musics']=Genre::withCount('musics')->get();
+            $data['total_genre_musics']=Genre::withCount('musics')->take(5)->get();
             $data['top_five_artist']=Artist::withCount('music')->take(5)->get();
             return $data;
         }

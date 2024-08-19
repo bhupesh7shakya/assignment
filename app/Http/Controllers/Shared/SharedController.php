@@ -154,7 +154,7 @@ abstract class SharedController extends Controller
         $data['view_only'] = true;
         $data['route_name'] = '#';
         $data['title'] = $this->title;
-        $data['data'] = $this->class_instance::find($id);
+        $data['data'] = $this->class_instance::getById($id);
         $data['model'] = $this->class_instance;
 
         /*
@@ -185,7 +185,7 @@ abstract class SharedController extends Controller
         }
         $data['route_name'] = $this->route_name;
         $data['title'] = $this->title;
-        $data['data'] = $this->class_instance::find($id);
+        $data['data'] = $this->class_instance::getById($id);
         $data['model'] = $this->class_instance;
 
         /*

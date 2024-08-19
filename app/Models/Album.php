@@ -110,4 +110,16 @@ class Album extends Model
 
         return DB::update($sql, array_merge(array_values($data), [$id]));
     }
+
+
+    public static function getById($id) {
+        // Get the table name of the model
+        $tableName = (new static())->getTable();
+
+        $sql = "SELECT * FROM $tableName WHERE id = ?";
+
+        $result = DB::select($sql, [$id]);
+
+        return !empty($result) ? $result[0] : null;
+    }
 }

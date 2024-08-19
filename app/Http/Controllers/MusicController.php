@@ -133,6 +133,8 @@ class MusicController extends SharedController
                 ->withInput();
         }
         $validated = $validator->validated();
+        // dd(Auth::user()->id);
+        Artist::all()->where('user_id', Auth::user()->id);
         $validated['artist_id'] = (Auth::user()->role=="super_admin")?$request->artist_id:Artist::all()->where('user_id', Auth::user()->id)->first()->id;
         // return $validated;
         if ($this->class_instance::create($validated)) {
