@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 class Artist extends Model
@@ -75,6 +76,25 @@ class Artist extends Model
 
     public static function updateRaw($id, array $data)
     {
+        $remove=[
+            "first_name",
+            "last_name",
+            "password",
+            "email",
+            "address",
+            "phone"
+        ];
+        $new_data=[];
+        foreach($remove as $r){
+            $new_data[$r]=$data[$r];
+        }
+        foreach($remove as $k) {
+            unset($data[$k]);
+        }
+        // dd($id);
+        $user_id=self::getById($id)->user_id;
+        // dd($user_id);
+        User::updateRaw($user_id,$new_data);
         $tableName = (new static())->getTable();
         $setClause = implode(', ', array_map(fn($key) => "$key = ?", array_keys($data)));
 
@@ -117,4 +137,15 @@ class Artist extends Model
 
         return $results;
     }
+    public static function getById($id) {
+        // Get the table name of the model
+        $tableName = (new static())->getTable();
+
+        $sql = "SELECT $tableName.*,users.id as user_id FROM $tableName Join users ON $tableName.user_id=users.id WHERE $tableName.id = ?";
+
+        $result = DB::select($sql, [$id]);
+        // dd($id);
+        return !empty($result) ? $result[0] : null;
+    }
+
 }

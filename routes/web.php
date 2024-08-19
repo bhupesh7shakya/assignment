@@ -22,7 +22,7 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 */
 
 Route::get('/', function () {
-return Auth::user();
+return redirect()->to('dashboard');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -42,7 +42,10 @@ Route::middleware(['auth'])->group(function () {
     })->name('logout');
 });
 
-Route::get("login/",[UserController::class,"login_index"])->name("login");
-Route::post("login/",[UserController::class,"login"])->name("user.login");
-Route::get("register/",[UserController::class,"register_index"])->name("user.register-form");
-Route::post("register/",[UserController::class,"register"])->name("user.register");
+Route::middleware(['redirect_if_authenticated'])->group(function () {
+
+    Route::get("login/",[UserController::class,"login_index"])->name("login");
+    Route::post("login/",[UserController::class,"login"])->name("user.login");
+    Route::get("register/",[UserController::class,"register_index"])->name("user.register-form");
+    Route::post("register/",[UserController::class,"register"])->name("user.register");
+});

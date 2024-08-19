@@ -40,11 +40,16 @@ class ArtistImport implements ToModel
             // Handle the case where there are not enough columns
             return null;
         }
-
+        $genders=[
+            'Female'=>'f',
+            'Male'=>'m',
+            'Other'=>'o'
+        ];
+        // dd($genders[$row[2]]);
         // Map the row based on index positions
         $name = $row[0] ?? null;
         $dob = $row[1] ?? null;
-        $gender = $row[2] ?? null;
+        $gender = $genders[$row[2]] ?? null;
         $firstReleaseYear = $row[3] ?? null;
         $email = $row[4] ?? null;
         $firstName = $row[5] ?? null;

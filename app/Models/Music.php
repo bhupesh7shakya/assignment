@@ -188,7 +188,6 @@ class Music extends Model
     {
         $tableName = (new static())->getTable();
         $setClause = implode(', ', array_map(fn($key) => "$key = ?", array_keys($data)));
-
         $sql = "UPDATE $tableName SET $setClause WHERE id = ?";
 
         return DB::update($sql, array_merge(array_values($data), [$id]));
@@ -208,5 +207,15 @@ class Music extends Model
 
         // Extract the count from the result
         return $results[0]->count ?? 0;
+    }
+    public static function getById($id) {
+        // Get the table name of the model
+        $tableName = (new static())->getTable();
+
+        $sql = "SELECT * FROM $tableName WHERE id = ?";
+
+        $result = DB::select($sql, [$id]);
+        // dd($result);
+        return !empty($result) ? $result[0] : null;
     }
 }

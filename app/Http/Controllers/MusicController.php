@@ -162,7 +162,7 @@ class MusicController extends SharedController
                             Album::all()->where('user_id', Auth::user()->id)->pluck('name', 'id'),
                         'name' => 'album_id',
                         'label' => 'Album',
-                        'value' => (isset($data->album_id)) ? $data->album : null,
+                        'value' => (isset($data->album_id)) ? $data->album_id : null,
                     ],
                 ],
                 [
@@ -172,7 +172,7 @@ class MusicController extends SharedController
                         Genre::all()->pluck('name', 'id'),
                         'name' => 'genre_id',
                         'label' => 'Genre',
-                        'value' => (isset($data->genre_id)) ? $data->genre : null,
+                        'value' => (isset($data->genre_id)) ? $data->genre_id : null,
                     ],
                     // ['options'=>
                     //   Artist::where('user_id',Auth::user()->id)->pluck('name','id')

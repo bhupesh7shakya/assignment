@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Shared;
 
 use App\Http\Controllers\Controller;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -37,7 +38,7 @@ abstract class SharedController extends Controller
                 $data = $this->class_instance::with($this->relation)->get();
             } else {
 
-                 $data = $this->class_instance::getAllRecord();
+                $data = $this->class_instance::getAllRecord();
             }
             // dd($data);
 
@@ -216,14 +217,31 @@ abstract class SharedController extends Controller
             abort(403, "You do not have permssion for this action");
         }
         $rules = $this->rules;
-        foreach ($rules as $key => $rule) {
-            foreach ($rule as $index => $r) {
-                $find_unique_key = explode(":", $r)[0];
-                if ($find_unique_key == "unique") {
-                    $rules[$key][$index] = $rules[$key][$index] . "," . $id;
-                }
-            }
-        }
+        // foreach ($rules as $key => $rule) {
+        //     // dd($rule);
+        //     foreach ($rule as $index => $r) {
+        //         try {
+        //             $find_unique_key = explode(":", $r)[0];
+        //             if ($find_unique_key == "unique") {
+        //                 $rules[$key][$index] = $rules[$key][$index] . "," . $id;
+        //             }
+        //         } catch (\Throwable $th) {
+        //             throw $th;
+        //         }
+        //     }
+        // } // foreach ($rules as $key => $rule) {
+        //     // dd($rule);
+        //     foreach ($rule as $index => $r) {
+        //         try {
+        //             $find_unique_key = explode(":", $r)[0];
+        //             if ($find_unique_key == "unique") {
+        //                 $rules[$key][$index] = $rules[$key][$index] . "," . $id;
+        //             }
+        //         } catch (\Throwable $th) {
+        //             throw $th;
+        //         }
+        //     }
+        // }
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             // dd($validator->errors());
@@ -231,10 +249,14 @@ abstract class SharedController extends Controller
                 ->withErrors($validator)
                 ->withInput();
         }
-
-        $data = $this->class_instance::updateRaw($id,$validator->validated());
+        // return $validator->validated();
+        $data = $this->class_instance::updateRaw($id, $validator->validated());
         if ($data) {
             session()->flash("success", "Data updated successfully");
+            return redirect()->route("{$this->route_name}.index");
+        }
+        else{
+            session()->flash("error", " something went wrong");
             return redirect()->route("{$this->route_name}.index");
         }
     }

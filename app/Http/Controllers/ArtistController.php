@@ -86,9 +86,9 @@ class ArtistController extends SharedController
         "first_release_year" => ["required", "date",],
         "gender" => ["required"],
         "email" => ['required', 'email', 'unique:users,email'],
-        "password" => ['required', 'min:6', 'max:255', 'unique:users,password'],
+        "password" => ['required', 'min:6', 'max:255', ],
         "address" => ['required', 'min:3', 'max:255'],
-        "phone" => ['required', 'regex:/^(98|97)\d{8}$/']
+        "phone" => ['required', 'regex:/^(98|97)\d{8}$/','unique:users,phone']
     ];
     public $table_headers = ["name", "dob", "gender", "first_release_year",];
     public $columns = ["name", "dob", "gender", "first_release_year"];

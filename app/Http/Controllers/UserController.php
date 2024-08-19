@@ -28,11 +28,11 @@ class UserController extends SharedController
                 "first_name"=>["required",],
                 "last_name"=>["required",],
                 "email"=> ['required','email','unique:users,email'],
-                "password"=> ['required','min:6','max:255','unique:users,password'],
+                "password"=> ['required','min:6','max:255'],
                 "gender"=> ['required'],
                 "address"=> ['required','min:3','max:255'],
                 "dob"=> ['required','date'],
-                "phone"=> ['required','regex:/^(98|97)\d{8}$/']
+                "phone"=> ['required','regex:/^(98|97)\d{8}$/','unique:users,phone']
             ]
         );
 

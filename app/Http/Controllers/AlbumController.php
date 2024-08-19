@@ -130,7 +130,7 @@ class AlbumController extends SharedController
         }
     }
 
-    
+
 
     public function createForm($data = null, $method = 'post', $action = 'store')
     {
