@@ -28,13 +28,10 @@ class ArtistController extends SharedController
             abort(403, "You do not have permssion for this action");
         }
         if ($request->ajax()) {
-            if (isset($this->relation)) {
-                $data = $this->class_instance::with($this->relation)->get();
-            } else {
 
-                $data = $this->class_instance::all()
-                    ->where('is_deleted', 0);
-            }
+
+            $data = $this->class_instance::getAllRecord();
+
 
             return DataTables::of($data)
                 ->addIndexColumn()
@@ -127,7 +124,7 @@ class ArtistController extends SharedController
 
     public function createForm($data = null, $method = 'post', $action = 'store')
     {
-       $form = [
+        $form = [
             'route' => route($this->route_name . '.' . $action, (isset($data->id) ? $data->id : null)),
             'method' => $method,
             'fields' =>
@@ -165,12 +162,12 @@ class ArtistController extends SharedController
                     //           User::where('role','artist_manager')->pluck('email','id')
                     //         , 'name' => 'user_id', 'label' => 'Assign Manager', 'value' => (isset($data->user_id)) ? $data->user_id : null,]
                     //     :[]
-                        // dd($this->form);
+                    // dd($this->form);
 
                 ]
             ]
         ];
-        $this->form=$form;
+        $this->form = $form;
         // dd($form);
         // dd(Auth::user()->role);
     }

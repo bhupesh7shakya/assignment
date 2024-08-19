@@ -48,15 +48,16 @@ class AlbumController extends SharedController
                 }
                 $data->get();
             } else {
-                $data = $this->class_instance::withCount('music');
+                $data = $this->class_instance::getAllRecordWithMusicCount();
                 // dd(Auth::user()->role );
                 // Apply the role-based filter if the user is not a super admin
                 if (!in_array(Auth::user()->role, ["super_admin", "artist_manager"])) {
-                    $data = $data->where('user_id', Auth::user()->id);
+                     $data = $this->class_instance::getAllRecordWithMusicCount( Auth::user()->id);
                 }
+                // return $data;
 
                 // Get the results
-                $data = $data->get();
+                // $data = $data->get();
             }
         }
         if ($request->ajax()) {
@@ -65,7 +66,7 @@ class AlbumController extends SharedController
             return DataTables::of($data)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
-
+                    // dd($row);
                     $delete_button = '
                 <button  type="button" class="btn btn-danger tabler-card" disabled ><i class="ti ti-trash"></i></i></button>';
                     if (!Gate::denies('delete', $this->class_instance)) {
@@ -120,7 +121,7 @@ class AlbumController extends SharedController
         }
         $validated = $validator->validated();
         $validated['user_id'] = (Auth::user()->role == "super_admin") ? $request->user_id : Auth::user()->id;
-        if ($this->class_instance::create($validated)) {
+        if ($this->class_instance::insertRaw($validated)) {
             session()->flash("success", "Data inserted successfully");
             return redirect()->route("{$this->route_name}.index");
         } else {
@@ -128,6 +129,9 @@ class AlbumController extends SharedController
             return redirect()->route("{$this->route_name}.index");
         }
     }
+
+    
+
     public function createForm($data = null, $method = 'post', $action = 'store')
     {
         $this->form = [

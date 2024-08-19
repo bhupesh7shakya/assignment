@@ -15,7 +15,7 @@ abstract class SharedController extends Controller
     public $title;
     public $class_instance;
     public $route_name;
-    public $view_path="shared_view";
+    public $view_path = "shared_view";
     public $rules;
     public $table_headers;
     public $columns;
@@ -26,52 +26,52 @@ abstract class SharedController extends Controller
         // return     $data = $this->class_instance::all();
 
         // return $this->currentFiscalYear();
-        if (Gate::denies('viewAny',$this->class_instance)) {
-            abort(403,"You do not have permssion for this action");
+        if (Gate::denies('viewAny', $this->class_instance)) {
+            abort(403, "You do not have permssion for this action");
         }
-        if ($request->ajax()) {
-            if(isset($this->relation)){
-                $data = $this->class_instance::with($this->relation)->get();
-            }else{
+        // return  $data = $this->class_instance::getAllRecord();
 
-                $data = $this->class_instance::all()
-                ->where('is_deleted', 0);
+        if ($request->ajax()) {
+
+            if (isset($this->relation)) {
+                $data = $this->class_instance::with($this->relation)->get();
+            } else {
+
+                 $data = $this->class_instance::getAllRecord();
             }
             // dd($data);
 
             return DataTables::of($data)
-            ->addIndexColumn()
-            ->addColumn('action', function ($row) {
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
 
-                $delete_button='
+                    $delete_button = '
                 <button  type="button" class="btn btn-danger tabler-card" disabled ><i class="ti ti-trash"></i></i></button>';
-                if (!Gate::denies('delete',$this->class_instance)) {
-                        $delete_button='
+                    if (!Gate::denies('delete', $this->class_instance)) {
+                        $delete_button = '
                                    <button onclick="del(' . $row['id'] . ')" type="button" class="btn btn-danger" ><i class="ti ti-trash"></i></i></button>
 
                         ';
-
                     }
-                $edit_button='
+                    $edit_button = '
                      <a href="#" disabled>
                                      <button  type="button" class="btn btn-primary" disabled  ><i class="ti ti-edit"></i></button>
                                 </a>
 
                 ';
-                if (!Gate::denies('update',$this->class_instance)) {
+                    if (!Gate::denies('update', $this->class_instance)) {
 
-                    $edit_button='
+                        $edit_button = '
                              <a href="' . route("{$this->route_name}.edit", "{$row['id']}") . '" >
                                      <button  type="button" class="btn btn-primary"  ><i class="ti ti-edit"></i></button>
                                 </a>';
-
-                }
+                    }
                     return '<div class="text-center">
-                                '.$edit_button.'
+                                ' . $edit_button . '
                                 <!-- <a href="' . route("{$this->route_name}.show", "{$row['id']}") . '">
                                     <button  type="button" class="btn btn-primary" ><i class="fa fa-eye"></i></button>
                                  </a>-->
-            '.$delete_button.'
+            ' . $delete_button . '
                             </div>';
                 })
                 ->rawColumns(['action'])
@@ -92,8 +92,8 @@ abstract class SharedController extends Controller
      */
     public function create()
     {
-        if (Gate::denies('create',$this->class_instance)) {
-            abort(403,"You do not have permssion for this action");
+        if (Gate::denies('create', $this->class_instance)) {
+            abort(403, "You do not have permssion for this action");
         }
         $data['route_name'] = $this->route_name;
         $data['title'] = $this->title;
@@ -120,8 +120,8 @@ abstract class SharedController extends Controller
      */
     public function store(Request $request)
     {
-        if (Gate::denies('create',$this->class_instance)) {
-            abort(403,"You do not have permssion for this action");
+        if (Gate::denies('create', $this->class_instance)) {
+            abort(403, "You do not have permssion for this action");
         }
         $validator = Validator::make($request->all(), $this->rules);
         // dd($validator->validated());
@@ -131,7 +131,7 @@ abstract class SharedController extends Controller
                 ->withInput();
         }
 
-        if ($this->class_instance::create($request->all())) {
+        if ($this->class_instance::insertRaw($request->all())) {
             session()->flash("success", "Data inserted successfully");
             return redirect()->route("{$this->route_name}.index");
         } else {
@@ -148,8 +148,8 @@ abstract class SharedController extends Controller
      */
     public function show($id)
     {
-        if (Gate::denies('view_any',$this->class_instance)) {
-            abort(403,"You do not have permssion for this action");
+        if (Gate::denies('view_any', $this->class_instance)) {
+            abort(403, "You do not have permssion for this action");
         }
         $data['view_only'] = true;
         $data['route_name'] = '#';
@@ -180,8 +180,8 @@ abstract class SharedController extends Controller
      */
     public function edit($id)
     {
-        if (Gate::denies('update',$this->class_instance)) {
-            abort(403,"You do not have permssion for this action");
+        if (Gate::denies('update', $this->class_instance)) {
+            abort(403, "You do not have permssion for this action");
         }
         $data['route_name'] = $this->route_name;
         $data['title'] = $this->title;
@@ -212,15 +212,15 @@ abstract class SharedController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (Gate::denies('update',$this->class_instance)) {
-            abort(403,"You do not have permssion for this action");
+        if (Gate::denies('update', $this->class_instance)) {
+            abort(403, "You do not have permssion for this action");
         }
-        $rules=$this->rules;
+        $rules = $this->rules;
         foreach ($rules as $key => $rule) {
             foreach ($rule as $index => $r) {
-                $find_unique_key=explode(":",$r)[0];
-                if ($find_unique_key=="unique") {
-                    $rules[$key][$index]=$rules[$key][$index].",".$id;
+                $find_unique_key = explode(":", $r)[0];
+                if ($find_unique_key == "unique") {
+                    $rules[$key][$index] = $rules[$key][$index] . "," . $id;
                 }
             }
         }
@@ -232,8 +232,8 @@ abstract class SharedController extends Controller
                 ->withInput();
         }
 
-        $data = $this->class_instance::find($id);
-        if ($data->update($request->all())) {
+        $data = $this->class_instance::updateRaw($id,$validator->validated());
+        if ($data) {
             session()->flash("success", "Data updated successfully");
             return redirect()->route("{$this->route_name}.index");
         }
@@ -247,12 +247,13 @@ abstract class SharedController extends Controller
      */
     public function destroy($id)
     {
-        if (Gate::denies('delete',$this->class_instance)) {
-            abort(403,"You do not have permssion for this action");
+        if (Gate::denies('delete', $this->class_instance)) {
+            abort(403, "You do not have permssion for this action");
         }
-        $instance = $this->class_instance::find($id);
+        // dd($id);
+        $instance = $this->class_instance::deleteById($id);
 
-        return ($instance->delete()) ?
+        return ($instance) ?
             response()->json(
                 [
                     'status' => 200,

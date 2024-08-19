@@ -26,8 +26,8 @@ class MusicController extends SharedController
         "genre_id" => ["required", "exists:genres,id"],
         // "artist_id"=>["required","exists:artists,id"],
     ];
-    public $table_headers = ["title", "album_name", "genre_id", "artist",];
-    public $columns = ["title", "album.name", "genre.name", "artist.name",];
+    public $table_headers = ["title", "album_name", "genre_name", "artist",];
+    public $columns = ["title", "album_name", "genre_name", "artist_name",];
 
     public function index(Request $request)
     {
@@ -46,29 +46,31 @@ class MusicController extends SharedController
         if (isset($this->relation)) {
             $data = $this->class_instance::with($this->relation)->get();
         } else {
-            if (Session::has('artist_id')) {
-                $data = $this->class_instance::where('artist_id', Session::get('artist_id'));
-                if (Auth::user()->role != "super_admin") {
-                    $data = $data->where('user_id', Auth::user()->id);
-                }
-                $data = $data->get();
-            } else {
-                if (Auth::user()->role != "super_admin") {
-                    $userId = Auth::id();
 
-                    // Step 2: Get the IDs of artists associated with the authenticated user
-                    $artistIds = Artist::where('user_id', $userId)->pluck('id')->toArray();
+            $data=$this->class_instance::getRecords();
+            // if (Session::has('artist_id')) {
+            //     $data = $this->class_instance::getAllRecords();
+            //     if (Auth::user()->role != "super_admin") {
+            //         $data = $data->where('user_id', Auth::user()->id);
+            //     }
+            //     $data = $data->get();
+            // } else {
+            //     if (Auth::user()->role != "super_admin") {
+            //         $userId = Auth::id();
 
-                    // Step 3: Combine the user ID and artist IDs into a single array
-                    $ids = array_merge([$userId], $artistIds);
+            //         // Step 2: Get the IDs of artists associated with the authenticated user
+            //         $artistIds = Artist::where('user_id', $userId)->pluck('id')->toArray();
 
-                    // Step 4: Query the model based on the combined IDs
-                    $data = $this->class_instance::with('album')->whereIn('artist_id', $ids)->get();
-                } else {
-                    // dd(Auth::user()->role!="super_admin");
-                    $data = $this->class_instance::with('album')->get();
-                }
-            }
+            //         // Step 3: Combine the user ID and artist IDs into a single array
+            //         $ids = array_merge([$userId], $artistIds);
+
+            //         // Step 4: Query the model based on the combined IDs
+            //         $data = $this->class_instance::with('album')->whereIn('artist_id', $ids)->get();
+            //     } else {
+            //         // dd(Auth::user()->role!="super_admin");
+            //         $data = $this->class_instance::with('album')->get();
+            //     }
+            // }
         }
         if ($request->ajax()) {
             // dd($data);
