@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\DB;
 class Artist extends Model
 {
     use HasFactory;
-    protected $fillable=[
+    protected $fillable = [
         "name",
         "dob",
         "gender",
@@ -17,11 +17,13 @@ class Artist extends Model
         "user_id"
     ];
 
-    public function music() {
+    public function music()
+    {
         return $this->hasMany(Music::class);
     }
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
     public static function getAllRecord()
@@ -36,11 +38,12 @@ class Artist extends Model
         return self::hydrate($results);
     }
 
-    public function getGenderAttribute(){
-        $gender=[
-            'm'=>"Male",
-            'f'=>"Female",
-            'o'=>"Other"
+    public function getGenderAttribute()
+    {
+        $gender = [
+            'm' => "Male",
+            'f' => "Female",
+            'o' => "Other"
         ];
         $genderCode = $this->attributes['gender'];
 
@@ -57,7 +60,6 @@ class Artist extends Model
         $sql = "DELETE FROM $tableName WHERE id = ?";
         // Execute raw SQL query
         return  DB::delete($sql, [$id]);
-
     }
 
     public static function insertRaw(array $data)
@@ -79,5 +81,40 @@ class Artist extends Model
         $sql = "UPDATE $tableName SET $setClause WHERE id = ?";
 
         return DB::update($sql, array_merge(array_values($data), [$id]));
+    }
+
+    public static function count_artist()
+    {
+        // Get the table name of the model
+        $tableName = (new static())->getTable();
+
+        // Build the SQL query to count the number of records
+        $sql = "SELECT COUNT(id) as count FROM $tableName";
+
+        // Execute the raw SQL query
+        $results = DB::select($sql);
+
+        // Extract the count from the result
+        return $results[0]->count ?? 0;
+    }
+    public static function getArtistWithMusicCount()
+    {
+        $tableName = (new self())->getTable();
+
+        // Define the raw SQL query
+        $sql = "
+        SELECT $tableName.name, COUNT(music.id) as music_count
+        FROM $tableName
+        LEFT JOIN music ON $tableName.id = music.genre_id
+        GROUP BY $tableName.id ,
+        $tableName.name
+        ORDER BY music_count DESC
+        limit 5
+    ";
+
+        // Execute the raw SQL query
+        $results = DB::select($sql);
+
+        return $results;
     }
 }

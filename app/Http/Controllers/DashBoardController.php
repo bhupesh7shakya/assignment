@@ -12,13 +12,13 @@ class DashBoardController extends Controller
 
     public function index(Request $request){
         $data=[];
-        $data['no_of_musics']=Music::all()->count();
-        $data['no_of_artist']=Artist::all()->count();
-        $data['no_of_genre']=Genre::all()->count();
+        $data['no_of_musics']=Music::count_music();
+        $data['no_of_artist']=Artist::count_artist();
+        $data['no_of_genre']=Genre::count_genre();
         if ($request->ajax()) {
+            $data['total_genre_musics']=Genre::getGenresWithMusicCount();
             # code...
-            $data['total_genre_musics']=Genre::withCount('musics')->take(5)->get();
-            $data['top_five_artist']=Artist::withCount('music')->take(5)->get();
+            $data['top_five_artist']=Artist::getArtistWithMusicCount();
             return $data;
         }
         return view('admin.dashboard.index',compact("data"));

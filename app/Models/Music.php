@@ -193,4 +193,20 @@ class Music extends Model
 
         return DB::update($sql, array_merge(array_values($data), [$id]));
     }
+
+
+    public static function count_music()
+    {
+        // Get the table name of the model
+        $tableName = (new static())->getTable();
+
+        // Build the SQL query to count the number of records
+        $sql = "SELECT COUNT(id) as count FROM $tableName";
+
+        // Execute the raw SQL query
+        $results = DB::select($sql);
+
+        // Extract the count from the result
+        return $results[0]->count ?? 0;
+    }
 }

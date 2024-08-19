@@ -168,7 +168,7 @@
                     response = response['total_genre_musics']
                     // console.log({response});
                     data = []
-                    data['series'] = response.map((res) => res.musics_count)
+                    data['series'] = response.map((res) => res.music_count)
                     data['labels'] = response.map((res) => res.name)
 
                     chart.update({
@@ -196,7 +196,13 @@
                         return index % 1 === 0 ? value : null;
                     }
 
-                }
+                },
+                axisY: {
+                labelInterpolationFnc: function(value) {
+                    return Math.round(value); // Round to the nearest integer
+                },
+                scaleMinSpace: 30
+            }
             };
 
             let line_chart = new Chartist.Bar('.linechart', data, options);
@@ -207,7 +213,7 @@
                 success: function(response) {
                     response = response['top_five_artist']
                     data = []
-                    data['series'] = response.map((res) => res.musics_count)
+                    data['series'] = response.map((res) => res.music_count)
                     data['labels'] = response.map((res) => res.name)
 
                     console.log({

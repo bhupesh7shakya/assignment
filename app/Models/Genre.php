@@ -18,6 +18,20 @@ class Genre extends Model
         return $this->hasMany(Music::class);
     }
 
+    public static function count_genre()
+    {
+        // Get the table name of the model
+        $tableName = (new static())->getTable();
+
+        // Build the SQL query to count the number of records
+        $sql = "SELECT COUNT(id) as count FROM $tableName";
+
+        // Execute the raw SQL query
+        $results = DB::select($sql);
+
+        // Extract the count from the result
+        return $results[0]->count ?? 0;
+    }
     public static function getAllRecord()
     {
         // Get the table name
@@ -29,6 +43,26 @@ class Genre extends Model
         // Convert results to a collection of User model instances
         return self::hydrate($results);
     }
+
+    public static function getGenresWithMusicCount()
+    {
+        $tableName = (new self())->getTable();
+
+        // Define the raw SQL query
+        $sql = "
+        SELECT $tableName.name, COUNT(music.id) as music_count
+        FROM $tableName
+        LEFT JOIN music ON $tableName.id = music.genre_id
+        GROUP BY $tableName.id ,
+        $tableName.name
+    ";
+
+        // Execute the raw SQL query
+        $results = DB::select($sql);
+
+        return $results;
+    }
+
     public static function deleteById($id)
     {
         $model = new self();
@@ -38,7 +72,6 @@ class Genre extends Model
         $sql = "DELETE FROM $tableName WHERE id = ?";
         // Execute raw SQL query
         return  DB::delete($sql, [$id]);
-
     }
     public static function insertRaw(array $data)
     {
