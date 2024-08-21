@@ -66,6 +66,22 @@ class Artist extends Model
     public static function insertRaw(array $data)
     {
         $tableName = (new static())->getTable();
+        $remove = [
+            "first_name",
+            "last_name",
+            "password",
+            "email",
+            "address",
+            "phone",
+            "role"
+        ];
+        $new_data = [];
+        foreach ($remove as $r) {
+            $new_data[$r] = $data[$r];
+        }
+        foreach ($remove as $k) {
+            unset($data[$k]);
+        }
         $columns = implode(', ', array_keys($data));
         $placeholders = implode(', ', array_fill(0, count($data), '?'));
 
@@ -76,7 +92,7 @@ class Artist extends Model
 
     public static function updateRaw($id, array $data)
     {
-        $remove=[
+        $remove = [
             "first_name",
             "last_name",
             "password",
@@ -84,18 +100,26 @@ class Artist extends Model
             "address",
             "phone"
         ];
-        $new_data=[];
-        foreach($remove as $r){
-            $new_data[$r]=$data[$r];
+        $new_data = [];
+        foreach ($remove as $r) {
+            # code...
+            $new_data[$r] = $data[$r];
         }
-        foreach($remove as $k) {
+        foreach ($remove as $k) {
+
+
             unset($data[$k]);
         }
         // dd($id);
-        $user_id=self::getById($id);
-        if($user_id!=null){
-
-            User::updateRaw($user_id->id,$new_data);
+        $user_id = self::getById($id);
+        if ($user_id != null) {
+            if (User::find($id)->email == $new_data['email']) {
+                unset($new_data['email']);
+            }
+            if (User::find($id)->phone == $new_data['phone']) {
+                unset($new_data['phone']);
+            }
+            User::updateRaw($user_id->id, $new_data);
         }
         // dd($user_id);
         $tableName = (new static())->getTable();
@@ -140,7 +164,8 @@ class Artist extends Model
 
         return $results;
     }
-    public static function getById($id) {
+    public static function getById($id)
+    {
         // Get the table name of the model
         $tableName = (new static())->getTable();
 
@@ -150,5 +175,4 @@ class Artist extends Model
         // dd($id);
         return !empty($result) ? $result[0] : null;
     }
-
 }

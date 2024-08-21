@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Shared\SharedController;
 use App\Models\Album;
 use App\Models\Artist;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -20,6 +21,7 @@ class AlbumController extends SharedController
     public $route_name = "albums";
     public $rules = [
         "name" => ["required", "max:20",],
+        "user_id" => [ ],
     ];
     public $table_headers = ["album_name", "music_count"];
     public $columns = ["name", "music_count"];
@@ -52,7 +54,7 @@ class AlbumController extends SharedController
                 // dd(Auth::user()->role );
                 // Apply the role-based filter if the user is not a super admin
                 if (!in_array(Auth::user()->role, ["super_admin", "artist_manager"])) {
-                     $datas = $this->class_instance::getAllRecordWithMusicCount( Auth::user()->id);
+                    $datas = $this->class_instance::getAllRecordWithMusicCount(Auth::user()->id);
                 }
                 // return $data;
 
@@ -113,8 +115,9 @@ class AlbumController extends SharedController
             abort(403, "You do not have permssion for this action");
         }
         $validator = Validator::make($request->all(), $this->rules);
-        // dd($validator->validated());
+        // dd("test");
         if ($validator->fails()) {
+            // dd($validator->errors());
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
@@ -129,6 +132,9 @@ class AlbumController extends SharedController
             return redirect()->route("{$this->route_name}.index");
         }
     }
+
+
+
 
 
 

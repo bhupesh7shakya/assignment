@@ -88,9 +88,8 @@ class Genre extends Model
     {
         $tableName = (new static())->getTable();
         $setClause = implode(', ', array_map(fn($key) => "$key = ?", array_keys($data)));
-
+        // dd($id);
         $sql = "UPDATE $tableName SET $setClause WHERE id = ?";
-
         return DB::update($sql, array_merge(array_values($data), [$id]));
     }
     public static function getById($id) {

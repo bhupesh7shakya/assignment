@@ -121,6 +121,7 @@ class Music extends Model
 
                 // Get the IDs of artists associated with the authenticated user
                 $artistIds = Artist::where('user_id', $userId)->pluck('id')->toArray();
+                $artistIds = Artist::all()->pluck('id')->toArray();
 
                 // Combine the user ID and artist IDs into a single array
                 $ids = array_merge([$userId], $artistIds);
@@ -136,8 +137,8 @@ class Music extends Model
                     LEFT JOIN artists ON $tableName.artist_id = artists.id
                     LEFT JOIN albums ON $tableName.album_id = albums.id
                     LEFT JOIN genres ON $tableName.genre_id = genres.id
-                    WHERE $tableName.artist_id IN ($placeholders)
-                ";
+                     WHERE $tableName.artist_id IN ($placeholders)
+                    ";
 
                 $bindings = $ids;
 
@@ -186,6 +187,7 @@ class Music extends Model
 
     public static function updateRaw($id, array $data)
     {
+
         $tableName = (new static())->getTable();
         $setClause = implode(', ', array_map(fn($key) => "$key = ?", array_keys($data)));
         $sql = "UPDATE $tableName SET $setClause WHERE id = ?";

@@ -40,7 +40,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected $appends=[
+    protected $appends = [
         "name"
     ];
 
@@ -53,8 +53,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function getNameAttribute($value){
-        return ucfirst($this->first_name). " ". ucfirst($this->last_name);
+    public function getNameAttribute($value)
+    {
+        return ucfirst($this->first_name) . " " . ucfirst($this->last_name);
     }
 
     public static function getAllRecord()
@@ -77,7 +78,6 @@ class User extends Authenticatable
         $sql = "DELETE FROM $tableName WHERE id = ?";
         // Execute raw SQL query
         return  DB::delete($sql, [$id]);
-
     }
     public static function insertRaw(array $data)
     {
@@ -92,6 +92,13 @@ class User extends Authenticatable
 
     public static function updateRaw($id, array $data)
     {
+        $remove = [
+            "name",
+            "first_release_year",
+        ];
+        foreach ($remove as $index=>$r) {
+            unset($data[$r]);
+        }
         $tableName = (new static())->getTable();
         $setClause = implode(', ', array_map(fn($key) => "$key = ?", array_keys($data)));
 
@@ -99,14 +106,15 @@ class User extends Authenticatable
 
         return DB::update($sql, array_merge(array_values($data), [$id]));
     }
-    public static function getById($id) {
+    public static function getById($id)
+    {
         // Get the table name of the model
         $tableName = (new static())->getTable();
 
-        $sql = "SELECT * FROM $tableName WHERE id = ?";
-
+        $sql = "SELECT $tableName.id as id,$tableName.*,artists.name as name ,artists.first_release_year as first_release_year FROM $tableName left JOIN artists on $tableName.id=artists.user_id WHERE $tableName.id = ?";
+        // dd($sql);
         $result = DB::select($sql, [$id]);
-
+        // dd($result);
         return !empty($result) ? $result[0] : null;
     }
 }

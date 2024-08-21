@@ -69,8 +69,9 @@
                     @if (isset($field['readonly']) && $field['readonly'] == true) readonly @endif
                     >
                     @foreach ($field['options'] as $key => $option)
-                        <option @if ($field['value'] == $option) selected @endif value="{{ $key }}">
-                            {{ ucfirst($option )}}</option>
+                    {{-- {{dd($field['value'])}} --}}
+                        <option @if ($field['value'] == $key) selected @endif value="{{ $key }}">
+                            {{ ucfirst($option )}}  </option>
                     @endforeach
                 </select>
                 @error($field['name'])

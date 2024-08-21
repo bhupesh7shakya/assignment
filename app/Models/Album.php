@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class Album extends Model
@@ -103,16 +104,24 @@ class Album extends Model
 
     public static function updateRaw($id, array $data)
     {
+        // dd($data);
+        $data['user_id'] = (Auth::user()->role == "super_admin") ? $data['user_id'] : Auth::user()->id;
+
+        if (Album::find($id)->name == $data['name'] && Album::find($id)->user_id == $data['user_id']) {
+            return true;
+        }
         $tableName = (new static())->getTable();
         $setClause = implode(', ', array_map(fn($key) => "$key = ?", array_keys($data)));
 
         $sql = "UPDATE $tableName SET $setClause WHERE id = ?";
+        // dd($sql,$data['name'],$id);
 
         return DB::update($sql, array_merge(array_values($data), [$id]));
     }
 
 
-    public static function getById($id) {
+    public static function getById($id)
+    {
         // Get the table name of the model
         $tableName = (new static())->getTable();
 

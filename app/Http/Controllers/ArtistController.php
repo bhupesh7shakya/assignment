@@ -86,9 +86,9 @@ class ArtistController extends SharedController
         "first_release_year" => ["required", "date",],
         "gender" => ["required"],
         "email" => ['required', 'email', 'unique:users,email'],
-        "password" => ['required', 'min:6', 'max:255', ],
+        "password" => ['required', 'min:6', 'max:255',],
         "address" => ['required', 'min:3', 'max:255'],
-        "phone" => ['required', 'regex:/^(98|97)\d{8}$/','unique:users,phone']
+        "phone" => ['required', 'regex:/^(98|97)\d{8}$/', 'unique:users,phone']
     ];
     public $table_headers = ["name", "dob", "gender", "first_release_year",];
     public $columns = ["name", "dob", "gender", "first_release_year"];
@@ -122,6 +122,48 @@ class ArtistController extends SharedController
         }
     }
 
+
+    public function update(Request $request, $id)
+    {
+        if (Gate::denies('update', $this->class_instance)) {
+            abort(403, "You do not have permssion for this action");
+        }
+        $rules = $this->rules;
+        $a = Artist::where('user_id', $id)->first()->id;
+        $rules = [
+            'name' => ['required',  'max:20', 'unique:artists,name,' . $a,],
+            'first_name' => ['required', 'max:20'],
+            'last_name' => ['required', 'max:20'],
+            'dob' => ['required', 'date'], // Add 'date' if DOB should be a valid date
+            'first_release_year' => ['required',], // If it's a year
+            'gender' => ['required'],
+            'email' => ['required', 'email', 'unique:users,email,' . $id],
+            'password' => ['required', 'min:6', 'max:255'],
+            'address' => ['required', 'min:3', 'max:255'],
+            'phone' => ['required', 'regex:/^(98|97)\d{8}$/', 'unique:users,phone,' . $id],
+        ];
+        // dd($rules);
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            // dd($validator->errors());
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+        // return $validator->validated();
+        $validated_data = $validator->validated();
+
+        $data = $this->class_instance::updateRaw($id, $validated_data);
+        if ($data) {
+            session()->flash("success", "Data updated successfully");
+            return redirect()->route("{$this->route_name}.index");
+        } else {
+            session()->flash("error", " something went wrong");
+            return redirect()->route("{$this->route_name}.index");
+        }
+    }
+
+
     public function createForm($data = null, $method = 'post', $action = 'store')
     {
         $form = [
@@ -150,7 +192,7 @@ class ArtistController extends SharedController
                 ],
                 [
                     ['type' => 'text', 'name' => 'email', 'label' => 'Email', 'value' => (isset($data->email)) ? $data->email : null, 'placeholder' => 'Email',],
-                    ['type' => 'password', 'name' => 'password', 'label' => 'Password', 'value' => (isset($data->password)) ? $data->password : null, 'placeholder' => 'Password',],
+                    ['type' => 'password', 'name' => 'password', 'label' => 'Password', 'value' => (isset($data->password)) ? null : null, 'placeholder' => 'Password',],
 
                 ],
                 [

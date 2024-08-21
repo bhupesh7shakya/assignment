@@ -24,7 +24,7 @@ class MusicController extends SharedController
         "title" => ["required", "max:20",],
         "album_id" => ["required", "max:20", "exists:albums,id"],
         "genre_id" => ["required", "exists:genres,id"],
-        // "artist_id"=>["required","exists:artists,id"],
+        "artist_id"=>["exists:artists,id"],
     ];
     public $table_headers = ["title", "album_name", "genre_name", "artist",];
     public $columns = ["title", "album_name", "genre_name", "artist_name",];
@@ -126,8 +126,8 @@ class MusicController extends SharedController
             abort(403, "You do not have permssion for this action");
         }
         $validator = Validator::make($request->all(), $this->rules);
-        // dd($validator->validated());
         if ($validator->fails()) {
+            // dd($validator->errors());
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
