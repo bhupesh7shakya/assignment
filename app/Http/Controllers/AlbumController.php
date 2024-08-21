@@ -39,20 +39,20 @@ class AlbumController extends SharedController
             abort(403, "You do not have permssion for this action");
         }
         if (isset($this->relation)) {
-            $data = $this->class_instance::with($this->relation)->get();
+            $datas = $this->class_instance::with($this->relation)->get();
         } else {
             if (Session::has('artist_id')) {
-                $data = $this->class_instance::where('artist_id', Session::get('artist_id'));
-                if (Auth::user()->role != "super_admin") {
-                    $data = $data->where('user_id', Auth::user()->id);
-                }
-                $data->get();
+                $datas = $this->class_instance::where('user_id', Session::get('artist_id'));
+                // if (Auth::user()->role != "super_admin") {
+                //     $data = $data->where('user_id', Auth::user()->id);
+                // }
+                $datas->get();
             } else {
-                $data = $this->class_instance::getAllRecordWithMusicCount();
+                $datas = $this->class_instance::getAllRecordWithMusicCount();
                 // dd(Auth::user()->role );
                 // Apply the role-based filter if the user is not a super admin
                 if (!in_array(Auth::user()->role, ["super_admin", "artist_manager"])) {
-                     $data = $this->class_instance::getAllRecordWithMusicCount( Auth::user()->id);
+                     $datas = $this->class_instance::getAllRecordWithMusicCount( Auth::user()->id);
                 }
                 // return $data;
 
@@ -63,7 +63,7 @@ class AlbumController extends SharedController
         if ($request->ajax()) {
             // dd($data);
             Session::remove('artist_id');
-            return DataTables::of($data)
+            return DataTables::of($datas)
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     // dd($row);

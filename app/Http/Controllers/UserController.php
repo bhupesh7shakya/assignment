@@ -8,6 +8,7 @@ use Illuminate\Auth\Events\Validated;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -45,20 +46,20 @@ class UserController extends SharedController
                 ->withInput();
         }
         $validated_data=$validator->validated();
-        if ($request->role) {
+        if ($request->role !=null) {
+            dd($request->role);
             $validated_data['role']=$request->role;
         }else{
             $validated_data['role']="artist_manager";
         }
 
         $validated_data['password']=Hash::make($validated_data['password']);
-
-        $user=User::create($validated_data);
+        $user=User::create($validated_data)->role;
         session()->flash("success", "Registration Success! Now You can Login ");
         if ($to != "") {
             return redirect($to);
         }
-        return redirect('login');
+        return redirect('dashboard');
         // return view('');
     }
 
@@ -99,7 +100,7 @@ class UserController extends SharedController
             "first_name"=>["required",],
             "last_name"=>["required",],
             "email"=> ['required','email','unique:users,email'],
-            "password"=> ['required','min:6','max:255','unique:users,password'],
+            "password"=> ['required','min:6','max:255'],
             "gender"=> ['required'],
             "address"=> ['required','min:3','max:255'],
             "dob"=> ['required','date'],
@@ -123,7 +124,7 @@ class UserController extends SharedController
                 ],
                 [
                     ['type'=>'text','name'=>'email','label'=>'Email','value'=>(isset($data->email))?$data->email:null,'placeholder'=>'Email',],
-                    ['type'=>'password','name'=>'password','label'=>'Password','value'=>(isset($data->password))?$data->password:null,'placeholder'=>'Password',],
+                    ['type'=>'password','name'=>'password','label'=>'Password','value'=>(isset($data->password))?null:null,'placeholder'=>'Password',],
                 ],
                 [
                     ['type'=>'text','name'=>'address','label'=>'Address','value'=>(isset($data->address))?$data->address:null,'placeholder'=>'Address',],
@@ -145,10 +146,12 @@ class UserController extends SharedController
                         'artist'=>'Artist',
                         'artist_manager'=>'Artist Manager',
                     ], 'name' => 'role', 'label' => 'Role', 'value' => (isset($data->role)) ? $data->role : null,],
-                    []
+                    // []
                 ]
             ]
         ];
 
     }
+
+
 }

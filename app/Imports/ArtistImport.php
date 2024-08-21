@@ -63,11 +63,11 @@ class ArtistImport implements ToModel
         }
 
         // Find or create the user
-        $user = User::updateOrCreate(
+        $user = User::firstOrCreate(
             ['email' => $email], // Unique identifier
             [
                 'first_name' => $firstName,
-                'last_name' => $lastName,
+                'last_name' => $lastName??"",
                 'address' => $address,
                 'dob' => $dob,
                 'phone' => $phone,

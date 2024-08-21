@@ -49,10 +49,10 @@ class Music extends Model
         $bindings = [Session::get('artist_id')];
 
         // Add user filter if necessary
-        if (Auth::user()->role != "super_admin") {
-            $sql .= " AND user_id = ?";
-            $bindings[] = Auth::user()->id;
-        }
+        // if (Auth::user()->role != "super_admin") {
+        //     $sql .= " AND user_id = ?";
+        //     $bindings[] = Auth::user()->id;
+        // }
 
         // Execute raw SQL query
         return DB::select($sql, $bindings);
@@ -97,7 +97,7 @@ class Music extends Model
             $sql = "
                 SELECT $tableName.*,
                        artists.name AS artist_name,
-                       albums.title AS album_title,
+                       albums.name AS album_name,
                        genres.name AS genre_name
                 FROM $tableName
                 LEFT JOIN artists ON $tableName.artist_id = artists.id
@@ -109,8 +109,8 @@ class Music extends Model
             $bindings = [$artistId];
 
             if (Auth::user()->role != "super_admin") {
-                $sql .= " AND $tableName.user_id = ?";
-                $bindings[] = Auth::user()->id;
+                // $sql .= " AND $tableName.user_id = ?";
+                // $bindings[] = Auth::user()->id;
             }
 
             $results = DB::select($sql, $bindings);

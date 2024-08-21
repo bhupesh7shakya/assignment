@@ -35,6 +35,7 @@ class ArtistPolicy
     public function update(User $user,)
     {
         // Only artist_manager can update artists
+        // dd($user);
         return in_array($user->role, ['super_admin', 'artist_manager']);
     }
 

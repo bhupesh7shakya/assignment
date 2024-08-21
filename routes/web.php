@@ -22,21 +22,21 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 */
 
 Route::get('/', function () {
-return redirect()->to('dashboard');
+    return redirect()->to('dashboard');
 });
 
 Route::middleware(['auth'])->group(function () {
     Route::resource('genres', GenreController::class);
     Route::resource('artists', ArtistController::class);
-    Route::get('artists-export', [ArtistController::class,'export'])
-    ->name('artists.export');
-    Route::post('artists-import', [ArtistController::class,'import'])
+    Route::get('artists-export', [ArtistController::class, 'export'])
+        ->name('artists.export');
+    Route::post('artists-import', [ArtistController::class, 'import'])
         ->name('artists.import');
     Route::resource('musics', MusicController::class);
     Route::resource('albums', AlbumController::class);
     Route::resource('users', UserController::class);
-    Route::get('dashboard', [DashBoardController::class,'index'])->name('admin.dashboard');
-    Route::get('logout',function ()  {
+    Route::get('dashboard', [DashBoardController::class, 'index'])->name('admin.dashboard');
+    Route::get('logout', function () {
         Auth::logout();
         return redirect("/login");
     })->name('logout');
@@ -44,8 +44,8 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['redirect_if_authenticated'])->group(function () {
 
-    Route::get("login/",[UserController::class,"login_index"])->name("login");
-    Route::post("login/",[UserController::class,"login"])->name("user.login");
-    Route::get("register/",[UserController::class,"register_index"])->name("user.register-form");
-    Route::post("register/",[UserController::class,"register"])->name("user.register");
+    Route::get("login/", [UserController::class, "login_index"])->name("login");
+    Route::post("login/", [UserController::class, "login"])->name("user.login");
+    Route::get("register/", [UserController::class, "register_index"])->name("user.register-form");
+    Route::post("register/", [UserController::class, "register"])->name("user.register");
 });

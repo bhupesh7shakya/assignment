@@ -92,9 +92,12 @@ class Artist extends Model
             unset($data[$k]);
         }
         // dd($id);
-        $user_id=self::getById($id)->user_id;
+        $user_id=self::getById($id);
+        if($user_id!=null){
+
+            User::updateRaw($user_id->id,$new_data);
+        }
         // dd($user_id);
-        User::updateRaw($user_id,$new_data);
         $tableName = (new static())->getTable();
         $setClause = implode(', ', array_map(fn($key) => "$key = ?", array_keys($data)));
 
@@ -141,7 +144,7 @@ class Artist extends Model
         // Get the table name of the model
         $tableName = (new static())->getTable();
 
-        $sql = "SELECT $tableName.*,users.id as user_id FROM $tableName Join users ON $tableName.user_id=users.id WHERE $tableName.id = ?";
+        $sql = "SELECT $tableName.*,users.id as user_id,users.* FROM $tableName Join users ON $tableName.user_id=users.id WHERE $tableName.id = ?";
 
         $result = DB::select($sql, [$id]);
         // dd($id);

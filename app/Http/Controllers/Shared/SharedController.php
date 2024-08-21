@@ -220,6 +220,9 @@ abstract class SharedController extends Controller
         // foreach ($rules as $key => $rule) {
         //     // dd($rule);
         //     foreach ($rule as $index => $r) {
+        //         // foreach($r as $b){
+        //         //     dd($b)
+        //         // }
         //         try {
         //             $find_unique_key = explode(":", $r)[0];
         //             if ($find_unique_key == "unique") {
@@ -229,7 +232,9 @@ abstract class SharedController extends Controller
         //             throw $th;
         //         }
         //     }
-        // } // foreach ($rules as $key => $rule) {
+        // }
+
+        // foreach ($rules as $key => $rule) {
         //     // dd($rule);
         //     foreach ($rule as $index => $r) {
         //         try {

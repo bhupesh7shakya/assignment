@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('dob');
             $table->enum('gender', ['m', 'f', 'o']);
             $table->date('first_release_year');
-            $table->foreignIdFor(User::class)->nullable(true);
+            $table->foreignIdFor(User::class)->nullable(true)->constrained()->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
